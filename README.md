@@ -1,13 +1,3 @@
 # PCLB
-TU ME VOIS ? 
-
-ouiiiii
-bouuuuuuuu
-Looooool
-
-TROLOLOLOLOLOL
-
-Bon alors tu vois ça ?
-ouiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii =D
-non connard ta gueule!
-
+The meaning of this app is to communicate with my friends by use of TCP (server/client)
+and also in UDP ........
