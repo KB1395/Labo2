@@ -20,7 +20,8 @@ class Chat():
             '/exit': self._exit,
             '/quit': self._quit,
             '/join': self._join,
-            '/send': self._send
+            '/send': self._send,
+            '/address': self._userip
         }
         self.__running = True
         self.__address = None
@@ -51,7 +52,7 @@ class Chat():
         tokens = param.split(' ')
         if len(tokens) == 2:
             try:
-                self.__address = (socket.gethostbyaddr(tokens[0])[0], int(tokens[1]))
+                self.__address = (tokens[0], int(tokens[1]))
                 print('Connecté à {}:{}'.format(*self.__address))
             except OSError:
                 print("Erreur lors de l'envoi du message.")
@@ -76,6 +77,9 @@ class Chat():
                 pass
             except OSError:
                 return
+    def _userip(self,w=socket.gethostbyname('Le-Pécé')):
+        s = socket.socket(type=socket.SOCK_DGRAM)
+        print(w)
 
 if __name__ == '__main__':
     if len(sys.argv) == 3:
