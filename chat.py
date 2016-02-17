@@ -77,6 +77,8 @@ class Chat():
                 pass
             except OSError:
                 return
+            
+#pour obtenir son ip
     def _userip(self,w=socket.gethostbyname('Le-Pécé')):
         s = socket.socket(type=socket.SOCK_DGRAM)
         print(w)
