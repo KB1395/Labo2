@@ -77,13 +77,10 @@ class Chat():
                 pass
             except OSError:
                 return
-<<<<<<< HEAD
-    def _userip(self,w=socket.gethostbyname(socket.gethostname())):
-=======
+
             
 #pour obtenir son ip
     def _userip(self,w=socket.gethostbyname('Le-Pécé')):
->>>>>>> d6a439cc9e83a8d3206df2ea593ea1d5f8684958
         s = socket.socket(type=socket.SOCK_DGRAM)
         print(w)
 
