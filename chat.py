@@ -57,10 +57,12 @@ class Chat():
             except OSError:
                 print("Erreur lors de l'envoi du message.")
     
-    def _send(self, param):
+    def _send(self, param,user=socket.gethostname()):
+
         if self.__address is not None:
             try:
-                message = param.encode()
+                messageencode = (user+'dit:'+tokens[2:]).split(' ')
+                message=messageencode.encode()
                 totalsent = 0
                 while totalsent < len(message):
                     sent = self.__s.sendto(message[totalsent:], self.__address)
