@@ -47,7 +47,7 @@ class Chat():
     
     def _quit(self):
         self.__address = None
-    
+
     def _join(self, param):
         tokens = param.split(' ')
         if len(tokens) == 2:
@@ -58,11 +58,14 @@ class Chat():
                 print("Erreur lors de l'envoi du message.")
     
     def _send(self, param,user=socket.gethostname()):
-
+        tokens=param.split(' ')
+        if len(tokens)>=3:
+            self.__address=(tokens[0], int(tokens[1]))
         if self.__address is not None:
             try:
-                messageencode = (user+'dit:'+tokens[2:]).split(' ')
-                message=messageencode.encode()
+                string = " ".join(tokens[2:])
+                message=(user+' dit: '+string).encode()
+
                 totalsent = 0
                 while totalsent < len(message):
                     sent = self.__s.sendto(message[totalsent:], self.__address)
