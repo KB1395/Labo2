@@ -1,12 +1,12 @@
 import socket
 import sys
 
-SERVER = (socket.gethostname(), 6000) 
+SERVER = (socket.gethostbyname(socket.gethostname()), 6000)
 me = {}
 last = {}
 available = {}
-    
-class EchoServer():   
+
+class EchoServer():
 
 
     def __init__(self):
@@ -24,15 +24,15 @@ class EchoServer():
  #               client.close()
                 for key in last:
                     self._ret()
-                
+
             except OSError:
-                print(' Reception failed') 
+                print(' Reception failed')
 
     def _receive(self, client):
         word = []
         addresse = []
         bullshit = ['-']
-        
+
         pseudo = False
         nameke = False
         allin = False
@@ -40,7 +40,7 @@ class EchoServer():
         while not allin:
             data = client.recv(1)
             if data == b'+' or pseudo:
-                 pseudo = True               
+                 pseudo = True
             allin = data == b'/'
             if not pseudo:
                 word.append(data)
@@ -51,9 +51,9 @@ class EchoServer():
         available[b''.join(word)] = b''.join(addresse)
         last[b''.join(word)] = b''.join(addresse)
         for value in last.items():
-            
+
             print(value[1])
-      
+
         return b''.join(word + bullshit + addresse)
 
     def _ret(self):
@@ -64,8 +64,8 @@ class EchoServer():
 
 
 
-# Nécessite décorticage pour envoie, mais ça fait 5h qu'on est dessus donc ça sera pour demain 
-        print("Connected")    
+# Nécessite décorticage pour envoie, mais ça fait 5h qu'on est dessus donc ça sera pour demain
+        print("Connected")
         self.__s.send(available)
         last.delete(all)
         self.__s.quit()
@@ -74,16 +74,16 @@ class EchoServer():
 
 
 class EchoClient():
-    
-    
+
+
     def __init__(self,me):
- 
+
         self.__s = socket.socket()
         self.__message = me
-                      
+
     def prepa(self):
         self.__s.connect(SERVER)
-        ip = socket.gethostname()
+        ip = socket.gethostbyname(socket.gethostname())
         print(ip)
         print('Choisissez un pseudo: ')
         nameke = input()
@@ -91,7 +91,7 @@ class EchoClient():
         me[nameke] = ip
         self.__message = nameke
         self._join()
-                      
+
     def _join(self):
         try:
             print('join entering')
@@ -103,7 +103,7 @@ class EchoClient():
         except OSError:
             print('Unfindable server')
 
-    def _send(self):                     
+    def _send(self):
         msg = self.__message
         print(msg)
         print('msg ')
@@ -120,7 +120,7 @@ class EchoClient():
         except OSError:
             print("Sending failed")
 
-                      
+
     def _listen(self):
         self.__s.listen(42)
         back = __s.recv(1024)
@@ -135,19 +135,3 @@ if __name__ == '__main__':
     elif len(sys.argv) == 2 and sys.argv[1] == 'client':
         print('going client')
         EchoClient(sys.argv[1].encode()).prepa()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                      
