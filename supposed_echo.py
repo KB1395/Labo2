@@ -15,13 +15,13 @@ class EchoServer():
 
 
 
-    def listen (self):
+    def listen(self):
         self.__s.listen(20)
         while True:
             client, addr = self.__s.accept()
             try:
-                print(self._receive(client).decode())
- #               client.close()
+                self._receive(client)
+#                client.close()
                 for key in last:
                     self._ret()
 
@@ -60,7 +60,7 @@ class EchoServer():
 
     def _ret(self):
         print("connecting ?")
- #       for value in last.items():
+#       for value in last.items():
 #            a= (value[1],6000)
 #            self.__s.connect((a))
 
@@ -68,7 +68,7 @@ class EchoServer():
 
 # Nécessite décorticage pour envoie, mais ça fait 5h qu'on est dessus donc ça sera pour demain
         print("Connected")
-        self.__s.send(available)
+        self.__s.sendall(available)
         last.delete(all)
         self.__s.quit()
 
@@ -76,11 +76,10 @@ class EchoServer():
 
 
 class EchoClient():
-
-
     def __init__(self,me):
-
         self.__s = socket.socket()
+        clientaddr=socket.gethostbyname(socket.gethostname())
+        self.__s.bind((clientaddr,5000))
         self.__message = me
 
     def prepa(self):
@@ -99,10 +98,9 @@ class EchoClient():
             print('join entering')
             self._send()
             print('sent done ')
-#            self.__s.close()
+            self.__s.close()
             print('close done')
-            self.__s.listen()
-            print('listening')
+            print(self.__s)
         except OSError:
             print('Unfindable server')
 
@@ -110,25 +108,22 @@ class EchoClient():
         msg = self.__message
         print(msg)
         print('msg ')
-        message=msg.encode()
+        message = msg.encode()
         totalsent = 0
         try:
             while totalsent < len(message):
-                print (totalsent)
+                print(totalsent)
                 print(message)
-                print (len(message))
+                print(len(message))
                 sent = self.__s.send(message[totalsent:])
- #               sent = self.__s.send('a')
                 print(sent)
-                totalsent += sent
+                if sent !=None:
+                    totalsent += sent
         except OSError:
             print("Sending failed")
 
-
-    def _listen(self):
-        self.__s.listen(42)
-        back = __s.recv(1024)
-        print(back)
+    def _hear(self):
+        self.__s.listen()
 
 
 
