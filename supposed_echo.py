@@ -31,7 +31,7 @@ class EchoServer():
     def _receive(self, client):
         word = []
         addresse = []
-        bullshit = ['-']
+        bullshit = [b'-']
 
         pseudo = False
         nameke = False
@@ -53,8 +53,10 @@ class EchoServer():
         for value in last.items():
 
             print(value[1])
+        truc=word+bullshit+addresse
+        b''.join(truc)
 
-        return b''.join(word + bullshit + addresse)
+        return truc
 
     def _ret(self):
         print("connecting ?")
@@ -99,7 +101,8 @@ class EchoClient():
             print('sent done ')
 #            self.__s.close()
             print('close done')
-            self.__s.listen(20)
+            self.__s.listen()
+            print('listening')
         except OSError:
             print('Unfindable server')
 
@@ -107,13 +110,14 @@ class EchoClient():
         msg = self.__message
         print(msg)
         print('msg ')
+        message=msg.encode()
         totalsent = 0
         try:
-            while totalsent < len(msg):
+            while totalsent < len(message):
                 print (totalsent)
-                print(msg)
-                print (len(msg))
-                sent = self.__s.send(msg[totalsent:])
+                print(message)
+                print (len(message))
+                sent = self.__s.send(message[totalsent:])
  #               sent = self.__s.send('a')
                 print(sent)
                 totalsent += sent
