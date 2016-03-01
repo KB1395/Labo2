@@ -13,12 +13,14 @@ class EchoServer():
     def __init__(self):
         self.__s = socket.socket()
         self.__s.bind(SERVER)
+        print(SERVER)
 
 
 
     def listen(self):
-        self.__s.listen(20)
+
         while True:
+            self.__s.listen(20)
             client, addr = self.__s.accept()
             try:
                 self._receive(client)
@@ -64,6 +66,7 @@ class EchoClient():
         print(clientip)
         print('Choisissez un pseudo: ')
         nameke = input()
+        self.__pseudo=nameke
         address[nameke]=clientip
         self.__message = pickle.dumps(address)
         self._join()
@@ -151,7 +154,7 @@ class EchoClient():
         if self.__address is not None:
             try:
                 string = " ".join(tokens[0:])
-                message=(user+' dit: '+string).encode()
+                message=(self.__pseudo+' dit: '+string).encode()
 
                 totalsent = 0
                 while totalsent < len(message):
@@ -163,7 +166,7 @@ class EchoClient():
     def _receive(self):
         while self.__running:
             try:
-                data, address = self.__c.recvfrom(1024)
+                data, self.__address = self.__c.recvfrom(1024)
                 print(data.decode())
             except socket.timeout:
                 pass
