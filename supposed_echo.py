@@ -1,5 +1,6 @@
 import socket
 import sys
+import pickle
 
 SERVER = (socket.gethostbyname(socket.gethostname()), 6000)
 me = {}
@@ -19,58 +20,42 @@ class EchoServer():
         self.__s.listen(20)
         while True:
             client, addr = self.__s.accept()
+            print('accepted')
             try:
                 self._receive(client)
-#                client.close()
-                for key in last:
-                    self._ret()
+                client.close()
+                print('recieved')
+                self._ret()
 
             except OSError:
                 print(' Reception failed')
 
     def _receive(self, client):
-        word = []
-        addresse = []
-        bullshit = [b'-']
 
-        pseudo = False
-        nameke = False
-        allin = False
-
-        while not allin:
-            data = client.recv(1)
-            if data == b'+' or pseudo:
-                 pseudo = True
-            allin = data == b'/'
-            if not pseudo:
-                word.append(data)
-            else:
-                if not allin and data != b'+':
-                    addresse.append(data)
-
-        available[b''.join(word)] = b''.join(addresse)
-        last[b''.join(word)] = b''.join(addresse)
-        for value in last.items():
-
-            print(value[1])
-        truc=word+bullshit+addresse
-        b''.join(truc)
-
-        return truc
+        print('decoding')
+        data=client.recv(100)
+        addresse=pickle.loads(data)
+        print(addresse)
+        self.__addresse=addresse
 
     def _ret(self):
         print("connecting ?")
-#       for value in last.items():
-#            a= (value[1],6000)
-#            self.__s.connect((a))
+        print(self.__addresse)
+        for key in self.__addresse:
 
+            Pseudo=key
+            ip=self.__addresse[key]
+        print('attempting connection to', ip)
 
+        self.__s.connect((ip,5000))
 
-# Nécessite décorticage pour envoie, mais ça fait 5h qu'on est dessus donc ça sera pour demain
-        print("Connected")
-        self.__s.sendall(available)
+        print('connected')
+        available[Pseudo]=ip
+        baviable=pickle.dumps(available)
+        self.__s.sendall(baviable)
         last.delete(all)
         self.__s.quit()
+
 
 
 
@@ -80,18 +65,21 @@ class EchoClient():
         self.__s = socket.socket()
         clientaddr=socket.gethostbyname(socket.gethostname())
         self.__s.bind((clientaddr,5000))
-        self.__message = me
+        self.__message = clientaddr
 
     def prepa(self):
+        address={}
         self.__s.connect(SERVER)
         ip = socket.gethostbyname(socket.gethostname())
         print(ip)
         print('Choisissez un pseudo: ')
         nameke = input()
         print(nameke)
-        me[nameke] = ip
-        self.__message = nameke
+        address[nameke]=ip
+        self.__message = pickle.dumps(address)
         self._join()
+        self.__s.listen()
+        server,addr=self.__s.accept()
 
     def _join(self):
         try:
@@ -100,23 +88,15 @@ class EchoClient():
             print('sent done ')
             self.__s.close()
             print('close done')
-            print(self.__s)
         except OSError:
             print('Unfindable server')
 
     def _send(self):
-        msg = self.__message
-        print(msg)
-        print('msg ')
-        message = msg.encode()
+        message = self.__message
         totalsent = 0
         try:
             while totalsent < len(message):
-                print(totalsent)
-                print(message)
-                print(len(message))
                 sent = self.__s.send(message[totalsent:])
-                print(sent)
                 if sent !=None:
                     totalsent += sent
         except OSError:
@@ -124,6 +104,7 @@ class EchoClient():
 
     def _hear(self):
         self.__s.listen()
+
 
 
 
