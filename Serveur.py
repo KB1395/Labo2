@@ -59,24 +59,27 @@ class EchoClient():
 
     def prepa(self):
         address={}
-        ip=input('Please enter server\'s ip address:')
-        SERVER=(ip,6000)
-        self.__s.connect(SERVER)
-        clientip = socket.gethostbyname(socket.gethostname())
-        print(clientip)
-        print('Choose your pseudo: ')
-        nameke = input()
-        self.__pseudo=nameke
-        address[nameke]=clientip
-        self.__message = pickle.dumps(address,protocol=2)
-        self._join()
-        data=self.__s.recv(1000)
-        decodata=pickle.loads(data)
-        print('Connected people:')
-        for key in decodata:
-            print(key)
-        self.__s.close()
-        self._chat(decodata)
+        self.__ip=input('Please enter server\'s ip address:')
+        self.__SERVER=(self.__ip,6000)
+        try:
+            self.__s.connect(SERVER)
+            clientip = socket.gethostbyname(socket.gethostname())
+            print(clientip)
+            print('Choose your pseudo: ')
+            nameke = input()
+            self.__pseudo=nameke
+            address[nameke]=clientip
+            self.__message = pickle.dumps(address,protocol=2)
+            self._join()
+            data=self.__s.recv(1000)
+            decodata=pickle.loads(data)
+            print('Connected people:')
+            for key in decodata:
+                print(key)
+            self.__s.close()
+            self._chat(decodata)
+        except:
+            print('Serveur introuvable')
 
     def _join(self):
         try:
@@ -109,7 +112,8 @@ class EchoClient():
             '/quit': self._quit,
             '/send': self._sendchat,
             '/connect': self._connection,
-            '/help':self._help
+            '/help':self._help,
+            '/refresh':self._refresh
         }
         self.__running = True
         self.__address = None
@@ -137,9 +141,10 @@ class EchoClient():
         print("/quit #to quit discution")
         print("/exit #to exit program")
         print("/send #to send your message")
+        print("/refresh #to refresh the list of connected people")
 
     def _quit(self):
-        self.__address = None
+        self.__destinataire = None
     def _connection(self):
         who=input('Who do you wanna talk to?')
         if who in self.__people:
@@ -163,6 +168,8 @@ class EchoClient():
                     totalsent += sent
             except OSError:
                 print('Message reception failed.')
+        else:
+            print('Personne pas connectée')
 
     def _receive(self):
         while self.__running:
@@ -173,7 +180,23 @@ class EchoClient():
                 pass
             except OSError:
                 return
-
+    def _refresh(self):
+        self.__s = socket.socket()
+        clientaddr=socket.gethostbyname(socket.gethostname())
+        self.__s.bind((clientaddr,5000))
+        self.__message = clientaddr
+        address={}
+        self.__s.connect(self.__SERVER)
+        clientip = socket.gethostbyname(socket.gethostname())
+        address[self.__pseudo]=clientip
+        self.__message = pickle.dumps(address,protocol=2)
+        self._join()
+        data=self.__s.recv(1000)
+        decodata=pickle.loads(data)
+        print('Connected people:')
+        for key in decodata:
+            print(key)
+        self.__s.close()
 
 
 
