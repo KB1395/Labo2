@@ -59,12 +59,12 @@ class EchoClient():
 
     def prepa(self):
         address={}
-        ip=input('Quel est l\'ip du serveur?')
+        ip=input('Please enter server\'s ip address:')
         SERVER=(ip,6000)
         self.__s.connect(SERVER)
         clientip = socket.gethostbyname(socket.gethostname())
         print(clientip)
-        print('Choisissez un pseudo: ')
+        print('Choose your pseudo: ')
         nameke = input()
         self.__pseudo=nameke
         address[nameke]=clientip
@@ -72,7 +72,7 @@ class EchoClient():
         self._join()
         data=self.__s.recv(1000)
         decodata=pickle.loads(data)
-        print('Personnes connectées:')
+        print('Connected people:)
         for key in decodata:
             print(key)
         self.__s.close()
@@ -102,8 +102,8 @@ class EchoClient():
         s.settimeout(0.5)
         s.bind((host, port))
         self.__c = s
-        print('Écoute sur {}:{}'.format(host, port))
-        print('entrez une commande ou faites /help pour une liste des commandes')
+        print('Listening on {}:{}'.format(host, port))
+        print('Enter command (or /help for command list):')
         handlers = {
             '/exit': self._exit,
             '/quit': self._quit,
@@ -124,30 +124,30 @@ class EchoClient():
                 try:
                     handlers[command]() if param == '' else handlers[command](param)
                 except:
-                    print("Erreur lors de l'exécution de la commande.")
+                    print("Command execution failed.")
             else:
-                print('Command inconnue:', command)
+                print('Unknown command:', command)
 
     def _exit(self):
         self.__running = False
         self.__address = None
         self.__c.close()
     def _help(self):
-        print('/connect pour se connecter à une personne')
-        print("/quit pour se déconnecter d'une personne")
-        print("/exit pour quitter le programme")
-        print("/send pour envoyer un message quand connecté à quelqu'un")
+        print('/connect to join someone')
+        print("/quit to quit discution")
+        print("/exit to exit program")
+        print("/send to send your message")
 
     def _quit(self):
         self.__address = None
     def _connection(self):
-        who=input('A qui voulez vous parler?')
+        who=input('Who do you wanna talk to?')
         if who in self.__people:
             destinataire=self.__people[who]
             port=5000
             self.__destinataire=(destinataire,port)
         else:
-            print("personne introuvable")
+            print("Asked personne not found")
     def _sendchat(self,param):
         tokens=param.split(' ')
 
@@ -161,7 +161,7 @@ class EchoClient():
                     sent = self.__c.sendto(message[totalsent:], self.__destinataire)
                     totalsent += sent
             except OSError:
-                print('Erreur lors de la réception du message.')
+                print('Message reception failed.')
 
     def _receive(self):
         while self.__running:
