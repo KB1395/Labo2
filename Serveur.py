@@ -133,10 +133,10 @@ class EchoClient():
         self.__address = None
         self.__c.close()
     def _help(self):
-        print('/connect to join someone (No parameter needed)')
-        print("/quit to quit discution")
-        print("/exit to exit program")
-        print("/send to send your message")
+        print('/connect #to join someone (No parameter needed)')
+        print("/quit #to quit discution")
+        print("/exit #to exit program")
+        print("/send #to send your message")
 
     def _quit(self):
         self.__address = None
@@ -148,7 +148,7 @@ class EchoClient():
             self.__destinataire=(destinataire,port)
             print('connected to',who)
         else:
-            print("Asked personne not found")
+            print("Asked person not found")
     def _sendchat(self,param):
         tokens=param.split(' ')
 
