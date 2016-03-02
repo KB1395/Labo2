@@ -186,6 +186,7 @@ class EchoClient():
     #Connecting to someone happens in 2 steps: first saying you want to connect someone, then sayins to who you want to talk.
     def _connection(self):
         try:
+            who=input('Who do you want to talk to?')
             self.__s = socket.socket()
             clientaddr=socket.gethostbyname(socket.gethostname())
             self.__s.bind((clientaddr,5000))
@@ -199,7 +200,7 @@ class EchoClient():
             decodata=pickle.loads(data)
             self.__people=decodata
             self.__s.close()
-            who=input('Who do you want to talk to?')
+
             if who in self.__people:
                 destinataire=self.__people[who]
                 self.__receveur=who
