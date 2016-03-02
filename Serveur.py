@@ -154,7 +154,7 @@ class EchoClient():
         if self.__address is not None:
             try:
                 string = " ".join(tokens[0:])
-                message=(self.__pseudo+' dit: '+string).encode()
+                message=(self.__pseudo+' says: '+string).encode()
 
                 totalsent = 0
                 while totalsent < len(message):
