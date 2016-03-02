@@ -71,7 +71,7 @@ class EchoClient():
         self.__ip=input('Please enter server\'s ip address:')
         self.__SERVER=(self.__ip,6000)
         try:
-            self.__s.connect(SERVER)
+            self.__s.connect(self.__SERVER)
             clientip = socket.gethostbyname(socket.gethostname())
             print(clientip)
             print('Choose your pseudo: ')
