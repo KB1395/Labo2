@@ -139,7 +139,7 @@ class EchoClient():
             '/send': self._sendchat,
             '/connect': self._connection,
             '/help':self._help,
-            '/refresh':self._refresh
+            '/refresh':self._whosthere
         }
         self.__running = True
         self.__address = None
@@ -188,20 +188,7 @@ class EchoClient():
     def _connection(self):
         try:
             self.__receveur=input('Who do you want to talk to?')
-            self.__s = socket.socket()
-            clientaddr=socket.gethostbyname(socket.gethostname())
-            self.__s.bind((clientaddr,5000))
-            address={}
-            self.__s.connect(self.__SERVER)
-            clientip = socket.gethostbyname(socket.gethostname())
-            address[self.__pseudo]=clientip
-            self.__message = pickle.dumps(address,protocol=2)
-            self._join()
-            data=self.__s.recv(1000)
-            decodata=pickle.loads(data)
-            self.__people=decodata
-            self.__s.close()
-
+            self._refresh()
             if self.__receveur in self.__people:
                 destinataire=self.__people[self.__receveur]
                 port=5000
@@ -218,19 +205,7 @@ class EchoClient():
     def _sendchat(self,param):
         try:
             tokens=param.split(' ')
-            self.__s = socket.socket()
-            clientaddr=socket.gethostbyname(socket.gethostname())
-            self.__s.bind((clientaddr,5000))
-            address={}
-            self.__s.connect(self.__SERVER)
-            clientip = socket.gethostbyname(socket.gethostname())
-            address[self.__pseudo]=clientip
-            self.__message = pickle.dumps(address,protocol=2)
-            self._join()
-            data=self.__s.recv(1000)
-            decodata=pickle.loads(data)
-            self.__people=decodata
-            self.__s.close()
+            self._refresh()
 
             if self.__destinataire is not None and self.__receveur in self.__people:
                 try:
@@ -259,7 +234,10 @@ class EchoClient():
                 pass
             except OSError:
                 return
-
+    def _whosthere(self):
+        self._refresh()
+        for key in self.__people:
+            print(key)
     #If someone connects to the server after you established your connection, you will not see him.
     #The refresh command allows you to checks who's connected at any time.
     def _refresh(self):
@@ -270,16 +248,13 @@ class EchoClient():
         self.__s.connect(self.__SERVER)
         clientip = socket.gethostbyname(socket.gethostname())
         address[self.__pseudo]=clientip
-        print(address[self.__pseudo])
         self.__message = pickle.dumps(address,protocol=2)
         self._join()
         data=self.__s.recv(1000)
         decodata=pickle.loads(data)
-        print('Connected people:')
-        for key in decodata:
-            print(key)
         self.__people=decodata
         self.__s.close()
+        return decodata
 
 
     #Disconnect allows you to get out of the available dictionnary.
