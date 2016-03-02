@@ -33,7 +33,7 @@ class EchoServer():
 
     def _receive(self, client):
         data=client.recv(100)
-        addresse=pickle.loads(data,protocol=2)
+        addresse=pickle.loads(data)
         self.__addresse=addresse
 
     def _ret(self,client):
@@ -71,7 +71,7 @@ class EchoClient():
         self.__message = pickle.dumps(address,protocol=2)
         self._join()
         data=self.__s.recv(1000)
-        decodata=pickle.loads(data,protocol=2)
+        decodata=pickle.loads(data)
         print('Connected people:')
         for key in decodata:
             print(key)
