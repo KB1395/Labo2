@@ -179,6 +179,7 @@ class EchoClient():
 
     def _quit(self):
         self.__destinataire = None
+        print('You quit the conversation')
 
 
 
@@ -186,7 +187,7 @@ class EchoClient():
     #Connecting to someone happens in 2 steps: first saying you want to connect someone, then sayins to who you want to talk.
     def _connection(self):
         try:
-            who=input('Who do you want to talk to?')
+            self.__receveur=input('Who do you want to talk to?')
             self.__s = socket.socket()
             clientaddr=socket.gethostbyname(socket.gethostname())
             self.__s.bind((clientaddr,5000))
@@ -201,12 +202,11 @@ class EchoClient():
             self.__people=decodata
             self.__s.close()
 
-            if who in self.__people:
-                destinataire=self.__people[who]
-                self.__receveur=who
+            if self.__receveur in self.__people:
+                destinataire=self.__people[self.__receveur]
                 port=5000
                 self.__destinataire=(destinataire,port)
-                print('Connected to',who)
+                print('Connected to',self.__receveur)
             else:
                 print("Asked person not found")
         except:
