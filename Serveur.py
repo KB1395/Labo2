@@ -33,7 +33,7 @@ class EchoServer():
 
     def _receive(self, client):
         data=client.recv(100)
-        addresse=pickle.loads(data)
+        addresse=pickle.loads(data,protocol=2)
         self.__addresse=addresse
 
     def _ret(self,client):
@@ -43,7 +43,7 @@ class EchoServer():
             ip=self.__addresse[key]
         print('attempting connection to', ip)
         available[Pseudo]=ip
-        baviable=pickle.dumps(available)
+        baviable=pickle.dumps(available,protocol=2)
         client.send(baviable)
 
 
@@ -68,10 +68,10 @@ class EchoClient():
         nameke = input()
         self.__pseudo=nameke
         address[nameke]=clientip
-        self.__message = pickle.dumps(address)
+        self.__message = pickle.dumps(address,protocol=2)
         self._join()
         data=self.__s.recv(1000)
-        decodata=pickle.loads(data)
+        decodata=pickle.loads(data,protocol=2)
         print('Connected people:')
         for key in decodata:
             print(key)
