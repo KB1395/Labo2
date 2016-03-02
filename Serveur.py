@@ -248,6 +248,7 @@ class EchoClient():
         print('Connected people:')
         for key in decodata:
             print(key)
+        self.__people=decodata
         self.__s.close()
 
 
