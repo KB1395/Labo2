@@ -156,14 +156,17 @@ class EchoClient():
     def _quit(self):
         self.__destinataire = None
     def _connection(self):
-        who=input('Who do you wanna talk to?')
-        if who in self.__people:
-            destinataire=self.__people[who]
-            port=5000
-            self.__destinataire=(destinataire,port)
-            print('connected to',who)
-        else:
-            print("Asked person not found")
+        try:
+            who=input('Who do you wanna talk to?')
+            if who in self.__people:
+                destinataire=self.__people[who]
+                port=5000
+                self.__destinataire=(destinataire,port)
+                print('connected to',who)
+            else:
+                print("Asked person not found")
+        except:
+            print('This person is not connected')
     def _sendchat(self,param):
         tokens=param.split(' ')
 
@@ -206,6 +209,7 @@ class EchoClient():
         print('Connected people:')
         for key in decodata:
             print(key)
+        self.__people=decodata
         self.__s.close()
     def _disconnect(self):
         self.__s = socket.socket()
