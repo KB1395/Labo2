@@ -3,8 +3,6 @@ import sys
 import pickle
 import threading
 SERVER = (socket.gethostbyname(socket.gethostname()), 6000)
-me = {}
-last = {}
 available = {}
 
 class EchoServer():
@@ -35,24 +33,24 @@ class EchoServer():
     #Server receives IP addrese and pseudo from client and puts it into addresse list.
         data=client.recv(100)
         addresse=pickle.loads(data)
-        self.__addresse=addresse
+        self.__connip=addresse
 
 
 
     def _ret(self,client):
     #Checks every element in addresse and adds separatly pseudo's and addresses to available dictionnary.
-        for key in self.__addresse:
+        for key in self.__connip:
 
             Pseudo=key
-            print('Connection from:',self.__addresse)
-            status=self.__addresse[key].split(' ')
+            print('Connection from:',self.__connip)
+            status=self.__connip[key].split(' ')
             if len(status)>1 and status[1]=='out':
                 print('logoff detected')
                 available.pop(Pseudo,None)
                 logoff=('disconnected')
                 baviable=logoff.encode()
             else:
-                ip=self.__addresse[key]
+                ip=self.__connip[key]
                 available[Pseudo]=ip
             #Converting availables dictionnary into bites.
                 baviable=pickle.dumps(available,protocol=2)
@@ -80,14 +78,14 @@ class EchoClient():
             clientip = socket.gethostbyname(socket.gethostname())
             print(clientip)
             print('Choose your pseudo: ')
-            nameke = input()
-            self.__pseudo=nameke
+            name = input()
+            self.__pseudo=name
         #Creating a dictionnary with client's pseudo as key and his IP as value.
-            address[nameke]=clientip
+            address[name]=clientip
         #".dumps()" converts address into binary values.
         #As our programme had to work between MacBooks and Windows computers, we had to use a protocol 2 to dump.
             self.__message = pickle.dumps(address,protocol=2)
-            self._join()
+            self._send()
         #Client gets back the dictionnary of connected people.
             data=self.__s.recv(1000)
         #".loads" converts the recieved bites into dictionnary.
@@ -100,14 +98,6 @@ class EchoClient():
             self._chat(decodata)
         except:
             print('Serveur introuvable')
-
-
-    def _join(self):
-    #Bypass.
-        try:
-            self._send()
-        except OSError:
-            print('Unfindable server')
 
     def _send(self):
         message = self.__message
@@ -131,7 +121,7 @@ class EchoClient():
         s.bind((host, port))
         self.__c = s
         print('Listening on {}:{}'.format(host, port))
-    #We choose to propose a few commands to clients to make communication easy while keeping it basic.
+    #We choosed to provide a few commands to clients to make communication easy while keeping it basic.
         print('Enter command (or /help for command list):')
         handlers = {
             '/exit': self._exit,
@@ -159,7 +149,7 @@ class EchoClient():
                 print('Unknown command:', command)
 
                 
-    #When you're done talking and you wanna leave your address goes to "None" and the programme stops running.
+    #When you're done talking and you want to leave your address goes to "None" and the programme stops running.
     def _exit(self):
         self.__running = False
         self.__address = None
@@ -201,7 +191,7 @@ class EchoClient():
 
 
 
-            
+#to send messages to people via UDP            
     def _sendchat(self,param):
         try:
             tokens=param.split(' ')
@@ -224,7 +214,7 @@ class EchoClient():
             print('Person disconnected')
 
 
-
+#For recieve data
     def _receive(self):
         while self.__running:
             try:
@@ -234,12 +224,13 @@ class EchoClient():
                 pass
             except OSError:
                 return
+    #Whosthere command is used if you need a reminder about who's connected        
     def _whosthere(self):
         self._refresh()
         for key in self.__people:
             print(key)
     #If someone connects to the server after you established your connection, you will not see him.
-    #The refresh command allows you to checks who's connected at any time.
+    #The refresh command allows you to refresh the list of people connected.
     def _refresh(self):
         self.__s = socket.socket()
         clientaddr=socket.gethostbyname(socket.gethostname())
@@ -249,7 +240,7 @@ class EchoClient():
         clientip = socket.gethostbyname(socket.gethostname())
         address[self.__pseudo]=clientip
         self.__message = pickle.dumps(address,protocol=2)
-        self._join()
+        self._send()
         data=self.__s.recv(1000)
         decodata=pickle.loads(data)
         self.__people=decodata
@@ -268,7 +259,7 @@ class EchoClient():
         clientip = socket.gethostbyname(socket.gethostname())
         address[self.__pseudo]=clientip+' out'
         self.__message = pickle.dumps(address,protocol=2)
-        self._join()
+        self._send()
         print('Logoff request sent')
         self.__s.close()
 
