@@ -72,7 +72,7 @@ class EchoClient():
         self._join()
         data=self.__s.recv(1000)
         decodata=pickle.loads(data)
-        print('Connected people:)
+        print('Connected people:')
         for key in decodata:
             print(key)
         self.__s.close()
@@ -133,7 +133,7 @@ class EchoClient():
         self.__address = None
         self.__c.close()
     def _help(self):
-        print('/connect to join someone')
+        print('/connect to join someone (No parameter needed)')
         print("/quit to quit discution")
         print("/exit to exit program")
         print("/send to send your message")
@@ -146,6 +146,7 @@ class EchoClient():
             destinataire=self.__people[who]
             port=5000
             self.__destinataire=(destinataire,port)
+            print('connected to',who)
         else:
             print("Asked personne not found")
     def _sendchat(self,param):
