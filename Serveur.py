@@ -40,10 +40,19 @@ class EchoServer():
         for key in self.__addresse:
 
             Pseudo=key
-            ip=self.__addresse[key]
-        print('attempting connection to', ip)
-        available[Pseudo]=ip
-        baviable=pickle.dumps(available,protocol=2)
+            print(self.__addresse)
+            status=self.__addresse[key].split(' ')
+            print(status)
+            if len(status)>1 and status[1]=='out':
+                print('logoff detected')
+                available.pop(Pseudo,None)
+                logoff=('disconnected')
+                baviable=logoff.encode()
+            else:
+                ip=self.__addresse[key]
+                print('attempting connection to', ip)
+                available[Pseudo]=ip
+                baviable=pickle.dumps(available,protocol=2)
         client.send(baviable)
 
 
@@ -135,6 +144,7 @@ class EchoClient():
     def _exit(self):
         self.__running = False
         self.__address = None
+        self._disconnect()
         self.__c.close()
     def _help(self):
         print('/connect #to join someone (No parameter needed)')
@@ -184,11 +194,11 @@ class EchoClient():
         self.__s = socket.socket()
         clientaddr=socket.gethostbyname(socket.gethostname())
         self.__s.bind((clientaddr,5000))
-        self.__message = clientaddr
         address={}
         self.__s.connect(self.__SERVER)
         clientip = socket.gethostbyname(socket.gethostname())
         address[self.__pseudo]=clientip
+        print(address[self.__pseudo])
         self.__message = pickle.dumps(address,protocol=2)
         self._join()
         data=self.__s.recv(1000)
@@ -196,6 +206,19 @@ class EchoClient():
         print('Connected people:')
         for key in decodata:
             print(key)
+        self.__s.close()
+    def _disconnect(self):
+        self.__s = socket.socket()
+        clientaddr=socket.gethostbyname(socket.gethostname())
+        self.__s.bind((clientaddr,5000))
+        self.__message = clientaddr
+        address={}
+        self.__s.connect(self.__SERVER)
+        clientip = socket.gethostbyname(socket.gethostname())
+        address[self.__pseudo]=clientip+' out'
+        self.__message = pickle.dumps(address,protocol=2)
+        self._join()
+        print('logoff sent')
         self.__s.close()
 
 
