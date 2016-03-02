@@ -187,14 +187,17 @@ class EchoClient():
 
     #Connecting to someone happens in 2 steps: first saying you want to connect someone, then sayins to who you want to talk.
     def _connection(self):
-        who=input('Who do you wanna talk to?')
-        if who in self.__people:
-            destinataire=self.__people[who]
-            port=5000
-            self.__destinataire=(destinataire,port)
-            print('connected to',who)
-        else:
-            print("Asked person not found")
+        try:
+            who=input('Who do you want to talk to?')
+            if who in self.__people:
+                destinataire=self.__people[who]
+                port=5000
+                self.__destinataire=(destinataire,port)
+                print('Connected to',who)
+            else:
+                print("Asked person not found")
+        except:
+            print('This person is disconnected')
 
 
             
@@ -213,7 +216,7 @@ class EchoClient():
             except OSError:
                 print('Message reception failed.')
         else:
-            print('Personne pas connectée')
+            print('Person disconnected')
 
 
 
@@ -248,7 +251,7 @@ class EchoClient():
         self.__s.close()
 
 
-    #Disconnect ables you to get out of the available dictionnary.            
+    #Disconnect allows you to get out of the available dictionnary.
     def _disconnect(self):
         self.__s = socket.socket()
         clientaddr=socket.gethostbyname(socket.gethostname())
@@ -260,7 +263,7 @@ class EchoClient():
         address[self.__pseudo]=clientip+' out'
         self.__message = pickle.dumps(address,protocol=2)
         self._join()
-        print('logoff sent')
+        print('Logoff request sent')
         self.__s.close()
 
 
