@@ -152,7 +152,7 @@ class EchoClient():
     def _sendchat(self,param):
         tokens=param.split(' ')
 
-        if self.__address is not None:
+        if self.__destinataire is not None:
             try:
                 string = " ".join(tokens[0:])
                 message=(self.__pseudo+' says: '+string).encode()
