@@ -24,7 +24,7 @@ class EchoServer():
                 self._receive(client)
                 self._ret(client)
                 client.close()
-                print('data sent')
+                print('Data sent')
 
             except OSError:
                 print(' Reception failed')
@@ -44,9 +44,8 @@ class EchoServer():
         for key in self.__addresse:
 
             Pseudo=key
-            print(self.__addresse)
+            print('Connection from:',self.__addresse)
             status=self.__addresse[key].split(' ')
-            print(status)
             if len(status)>1 and status[1]=='out':
                 print('logoff detected')
                 available.pop(Pseudo,None)
@@ -54,7 +53,6 @@ class EchoServer():
                 baviable=logoff.encode()
             else:
                 ip=self.__addresse[key]
-                print('attempting connection to', ip)
                 available[Pseudo]=ip
             #Converting availables dictionnary into bites.
                 baviable=pickle.dumps(available,protocol=2)
@@ -188,9 +186,23 @@ class EchoClient():
     #Connecting to someone happens in 2 steps: first saying you want to connect someone, then sayins to who you want to talk.
     def _connection(self):
         try:
+            self.__s = socket.socket()
+            clientaddr=socket.gethostbyname(socket.gethostname())
+            self.__s.bind((clientaddr,5000))
+            address={}
+            self.__s.connect(self.__SERVER)
+            clientip = socket.gethostbyname(socket.gethostname())
+            address[self.__pseudo]=clientip
+            self.__message = pickle.dumps(address,protocol=2)
+            self._join()
+            data=self.__s.recv(1000)
+            decodata=pickle.loads(data)
+            self.__people=decodata
+            self.__s.close()
             who=input('Who do you want to talk to?')
             if who in self.__people:
                 destinataire=self.__people[who]
+                self.__receveur=who
                 port=5000
                 self.__destinataire=(destinataire,port)
                 print('Connected to',who)
@@ -200,22 +212,39 @@ class EchoClient():
             print('This person is disconnected')
 
 
+
             
     def _sendchat(self,param):
-        tokens=param.split(' ')
+        try:
+            tokens=param.split(' ')
+            self.__s = socket.socket()
+            clientaddr=socket.gethostbyname(socket.gethostname())
+            self.__s.bind((clientaddr,5000))
+            address={}
+            self.__s.connect(self.__SERVER)
+            clientip = socket.gethostbyname(socket.gethostname())
+            address[self.__pseudo]=clientip
+            self.__message = pickle.dumps(address,protocol=2)
+            self._join()
+            data=self.__s.recv(1000)
+            decodata=pickle.loads(data)
+            self.__people=decodata
+            self.__s.close()
 
-        if self.__destinataire is not None and self.__destinataire in self.__people:
-            try:
-                string = " ".join(tokens[0:])
-                message=(self.__pseudo+' says: '+string).encode()
+            if self.__destinataire is not None and self.__receveur in self.__people:
+                try:
+                    string = " ".join(tokens[0:])
+                    message=(self.__pseudo+' says: '+string).encode()
 
-                totalsent = 0
-                while totalsent < len(message):
-                    sent = self.__c.sendto(message[totalsent:], self.__destinataire)
-                    totalsent += sent
-            except OSError:
-                print('Message reception failed.')
-        else:
+                    totalsent = 0
+                    while totalsent < len(message):
+                        sent = self.__c.sendto(message[totalsent:], self.__destinataire)
+                        totalsent += sent
+                except OSError:
+                    print('Message reception failed.')
+            else:
+                print('Person disconnected')
+        except:
             print('Person disconnected')
 
 
