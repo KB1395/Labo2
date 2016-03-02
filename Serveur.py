@@ -9,16 +9,14 @@ available = {}
 
 class EchoServer():
 
-
     def __init__(self):
         self.__s = socket.socket()
         self.__s.bind(SERVER)
         print(SERVER)
 
 
-
     def listen(self):
-
+     # First routine in server makes him listen continuously to incoming connections.
         while True:
             self.__s.listen(20)
             client, addr = self.__s.accept()
@@ -31,12 +29,18 @@ class EchoServer():
             except OSError:
                 print(' Reception failed')
 
+
+
     def _receive(self, client):
+    #Server receives IP addrese and pseudo from client and puts it into addresse list.
         data=client.recv(100)
         addresse=pickle.loads(data)
         self.__addresse=addresse
 
+
+
     def _ret(self,client):
+    #Checks every element in addresse and adds separatly pseudo's and addresses to available dictionnary.
         for key in self.__addresse:
 
             Pseudo=key
@@ -52,7 +56,9 @@ class EchoServer():
                 ip=self.__addresse[key]
                 print('attempting connection to', ip)
                 available[Pseudo]=ip
+            #Converting availables dictionnary into bites.
                 baviable=pickle.dumps(available,protocol=2)
+        #Sends all available contacts back to clients.
         client.send(baviable)
 
 
@@ -67,6 +73,7 @@ class EchoClient():
         self.__message = clientaddr
 
     def prepa(self):
+    #First step is to precise the IP addresse of the wanted server and to connect to him.
         address={}
         self.__ip=input('Please enter server\'s ip address:')
         self.__SERVER=(self.__ip,6000)
@@ -77,20 +84,28 @@ class EchoClient():
             print('Choose your pseudo: ')
             nameke = input()
             self.__pseudo=nameke
+        #Creating a dictionnary with client's pseudo as key and his IP as value.
             address[nameke]=clientip
+        #".dumps()" converts address into binary values.
+        #As our programme had to work between MacBooks and Windows computers, we had to use a protocol 2 to dump.
             self.__message = pickle.dumps(address,protocol=2)
             self._join()
+        #Client gets back the dictionnary of connected people.
             data=self.__s.recv(1000)
+        #".loads" converts the recieved bites into dictionnary.
             decodata=pickle.loads(data)
             print('Connected people:')
             for key in decodata:
                 print(key)
             self.__s.close()
+        #When you know who's connected to chat you're good and you can get started =) .
             self._chat(decodata)
         except:
             print('Serveur introuvable')
 
+
     def _join(self):
+    #Bypass.
         try:
             self._send()
         except OSError:
@@ -106,6 +121,9 @@ class EchoClient():
                     totalsent += sent
         except OSError:
             print("Sending failed")
+
+
+            
     def _chat(self,decodata):
         self.__people=decodata
         host=socket.gethostbyname(socket.gethostname())
@@ -115,6 +133,7 @@ class EchoClient():
         s.bind((host, port))
         self.__c = s
         print('Listening on {}:{}'.format(host, port))
+    #We choose to propose a few commands to clients to make communication easy while keeping it basic.
         print('Enter command (or /help for command list):')
         handlers = {
             '/exit': self._exit,
@@ -141,11 +160,16 @@ class EchoClient():
             else:
                 print('Unknown command:', command)
 
+                
+    #When you're done talking and you wanna leave your address goes to "None" and the programme stops running.
     def _exit(self):
         self.__running = False
         self.__address = None
         self._disconnect()
         self.__c.close()
+
+
+        
     def _help(self):
         print('/connect #to join someone (No parameter needed)')
         print("/quit #to quit discution")
@@ -153,8 +177,15 @@ class EchoClient():
         print("/send #to send your message")
         print("/refresh #to refresh the list of connected people")
 
+
+
     def _quit(self):
         self.__destinataire = None
+
+
+
+
+    #Connecting to someone happens in 2 steps: first saying you want to connect someone, then sayins to who you want to talk.
     def _connection(self):
         who=input('Who do you wanna talk to?')
         if who in self.__people:
@@ -164,6 +195,9 @@ class EchoClient():
             print('connected to',who)
         else:
             print("Asked person not found")
+
+
+            
     def _sendchat(self,param):
         tokens=param.split(' ')
 
@@ -181,6 +215,8 @@ class EchoClient():
         else:
             print('Personne pas connectée')
 
+
+
     def _receive(self):
         while self.__running:
             try:
@@ -190,6 +226,9 @@ class EchoClient():
                 pass
             except OSError:
                 return
+
+    #If someone connects to the server after you established your connection, you will not see him.
+    #The refresh command allows you to checks who's connected at any time.
     def _refresh(self):
         self.__s = socket.socket()
         clientaddr=socket.gethostbyname(socket.gethostname())
@@ -207,6 +246,9 @@ class EchoClient():
         for key in decodata:
             print(key)
         self.__s.close()
+
+
+    #Disconnect ables you to get out of the available dictionnary.            
     def _disconnect(self):
         self.__s = socket.socket()
         clientaddr=socket.gethostbyname(socket.gethostname())
@@ -223,6 +265,8 @@ class EchoClient():
 
 
 
+#When running this code on Bash you need to specify is you want to be server or client.
+#Herefor you simply need to say "server" or "client" after "python Serveur.py".
 
 if __name__ == '__main__':
     if len(sys.argv) == 2 and sys.argv[1] == 'server':
