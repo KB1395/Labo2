@@ -20,15 +20,16 @@ The meaning of this app is to communicate with friendsusing TCP (server/client)i
     Ex:
     "172.12.67.3"
 
-4) The second step is the most difficult, find yourself a nice pseudo! Be aware to enter your pseudo the same way you did in step 3 if you're working on MacBooks.
+4) The second step is the most difficult, find yourself a nice pseudo! Be aware to enter your pseudo the same way you did in step 3 if you're working on MacBooks. Ex:"Me"
 
-5)The server will now send you a list of connected people you can chat with and ask for a command.By tipping '/help' you'll receive a list of commands you can use with a description of their utility.
+5)The server will now send you a list of connected people you can chat with and ask for a command. By tipping '/help' you'll receive a list of commands you can use with a description of their utility.
 !There is no need of a special way of enter for macs ;) !
 
   We encourage you to try them all to get used with the way of using our programm ;).
 
-6) If you want to talk to someone tippe '/connect'. The serve will ask you who you want to talk to. Simply enter the pseudo of that personne and press enter (MacBook users will have to use "" as before to enter the name of the target personne).The sever will tell you you're connected and you can start chatting! Don't forget to tippe '/send' before the message you want to send. You can talk to different people at the same time but you'll have to '/connect' each time you talk to a different personne. If you want to talk at the same personne twice '/connect' isn't necessary between each message. Mac users don't have to write their message in "".
+6) If you want to talk to someone type '/connect'. The serve will ask you who you want to talk to. Simply enter the pseudo of that personne and press enter (MacBook users will have to use "" as before to enter the name of the target personne).The sever will tell you you're connected and you can start chatting! Don't forget to type '/send' before the message you want to send. You can talk to different people at the same time but you'll have to '/connect' each time you want to talk to a different personne. If you want to talk at the same personne twice '/connect' isn't necessary between each message. Mac users don't have to write their message in "".
+Therefore, if the person you were connected with went disconnected, you'll see that with your next send that she's gone. it's the same if you want to connect with somebody gone.
 
-7) You might not get the personne you want to talk to in the list the server sends you if the personne connects the server after you did. Simply tippe '/refresh' to be sent back the list. This time you should see him.
+7) You might not get the personne you want to talk to in the list the server sends you if the personne connects the server after you did. Simply type '/refresh' to be sent back the list. This time you should see him. More, a "whosthere" is automatically run when you want to connect or send to make sure the personne still there.
 
-8) When you're done talking simply tippe '/quit' to exit the conversation and '/exit' to close to program.
+8) When you're done talking simply type '/quit' to exit the conversation and '/exit' to close to program.
